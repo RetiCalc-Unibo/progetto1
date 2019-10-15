@@ -4,9 +4,11 @@ import java.net.*;
 public class RSClient{
 
 	public static void main(String[] args){
+
 		InetAddress addr = null;
 		int port = -1;
 
+		// settaggio argomenti 
 		try{
 			if(args.length == 3){
 				addr = InetAddress.getByName(args[0]);
@@ -18,9 +20,12 @@ public class RSClient{
 		} catch (UnknownHostException e){
 			System.out.println("Problemi nella determinazione dell'endpoint del server : ");
 			e.printStackTrace();
-			System.out.println("RSClientt: interrompo...");
+			System.out.println("RSClient: interrompo...");
 			System.exit(2);
 		}
+
+		// realizzazione socket e settaggio timeout 30s
+		// creazione datagram packet
 
 		DatagramSocket socket = null;
 		DatagramPacket packet = null;
@@ -32,11 +37,23 @@ public class RSClient{
 			packet = new DatagramPacket(buf, buf.length, addr, port);
 			System.out.println("\nRSClient: avviato");
 			System.out.println("Creata la socket: " + socket);
+
 		} catch (SocketException e){
 			System.out.println("Problemi nella creazione della socket: ");
 			e.printStackTrace();
 			System.out.println("RSClient: interrompo...");
 			System.exit(1);
 		}
+
+		// compilazione richiesta al server per porta RS
+
+		byte [] data = null;
+
+		DataOutputStream doStream;
+		ByteArrayOutputStream boStream;
+
+		packet.setData(data);
+
+
 	}
 }

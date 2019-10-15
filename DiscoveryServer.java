@@ -25,7 +25,7 @@ public class DiscoveryServer {
         DatagramPacket packet = null;
         byte[] buf = new byte[256];
 
-        SwapRowServer[] swapServers = null;
+        RowSwapServer[] swapServers = null;
 
         // controllo argomenti input: numero dispari di argomenti, almeno 3 (serverPort file1 port1)
         if (args.length%2 == 1 && args.length >= 3) {
@@ -80,9 +80,10 @@ public class DiscoveryServer {
         }
 
         //creazione e avvio servers SwapRow
-        swapServers = new SwapRowServer[nports];
+        swapServers = new RowSwapServer[nports];
         for(int i = 0; i < nports; i++){
-                swapServers[i] = new SwapRowServer(files[i], ports[i]);
+                swapServers[i] = new RowSwapServer
+    (files[i], ports[i]);
                 swapServers[i].start();
         }
 

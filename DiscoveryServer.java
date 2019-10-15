@@ -82,8 +82,7 @@ public class DiscoveryServer {
         //creazione e avvio servers SwapRow
         swapServers = new RowSwapServer[nports];
         for(int i = 0; i < nports; i++){
-                swapServers[i] = new RowSwapServer
-    (files[i], ports[i]);
+                swapServers[i] = new RowSwapServer(files[i], ports[i]);
                 swapServers[i].start();
         }
 

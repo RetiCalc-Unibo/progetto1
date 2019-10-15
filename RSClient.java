@@ -5,6 +5,8 @@ public class RSClient{
 
 	public static void main(String[] args){
 
+
+
 		InetAddress addr = null;
 		int port = -1;
 
@@ -122,50 +124,65 @@ public class RSClient{
 		int raw1 = -1; 
 		int raw2 = -1;
 		BufferedReader stdIn = new BufferedReader((new InputStreamReader(System.in)));
-		try {
-			
-			boStream.reset();	
-			
-			System.out.println("Inserire prima riga da invertire");
-			
-			while((input = stdIn.readLine()) != null || raw1 != -1) {
-			
-				try { 
-					raw1 = Integer.valueOf(input);
+		try{ 
+
+			while((input = stdIn.readLine()) != null) {
+
+				try {
 					
-				}catch(NumberFormatException e) {
+					boStream.reset();	
+								
+					while((input = stdIn.readLine()) != null || raw1 != -1) {
+						
+						System.out.println("Inserire prima riga da invertire");
+						
+						try { 
+							raw1 = Integer.valueOf(input);
+							
+						}catch(NumberFormatException e) {
+							
+							System.out.println("Problema interazione da console: ");
+							e.printStackTrace();
+							System.out
+							.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti numero riga 1: ");
+							continue;
+						}
+					}
 					
-					System.out.println("Problema interazione da console: ");
+					while((input = stdIn.readLine()) != null || raw2 != -1) { 
+						
+						System.out.println("Inserire seconda riga con cui invertire");
+
+						try { 
+							raw2 = Integer.valueOf(input);
+							
+						} catch(NumberFormatException e) {
+							
+							System.out.println("Problema interazione da console: ");
+							e.printStackTrace();
+							System.out
+							.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti numero riga 2: ");
+							continue;
+						}
+					}
+				} catch (IOException e) {
+
+					System.out.println("Problemi invio richiesta a RawSwap: ");
 					e.printStackTrace();
-					System.out
-					.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti numero riga 1: ");
+
 					continue;
 				}
 			}
-			
-			System.out.println("Inserire seconda riga con cui invertire");
-			
-			while((input = stdIn.readLine()) != null || raw2 != -1) { 
-				try { 
-					raw2 = Integer.valueOf(input);
-					
-				}catch(NumberFormatException e) {
-					
-					System.out.println("Problema interazione da console: ");
-					e.printStackTrace();
-					System.out
-					.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti numero riga 2: ");
-					continue;
-				}
-			}
-			
-			
-			
-			
-			
-			
-		} catch (IOException e) {
-			
-		}	
+		} catch (Exception e){
+
+			System.out.println("Eccezione non contemplata");
+			e.printStackTrace();
+
+		}
+
+		System.out.println("RSClient: terminazione....... è stato bll");
+
+		socket.close();
+
 	}
 }

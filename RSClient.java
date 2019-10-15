@@ -58,7 +58,7 @@ public class RSClient{
 		ByteArrayInputStream biStream = null;
 		DataInputStream diStream = null;
 		String risposta = null;
-		int RSport = -1;
+		int res = -1;
 		
 		
 		try {
@@ -102,7 +102,7 @@ public class RSClient{
 			diStream = new DataInputStream(biStream);
 			risposta = diStream.readUTF();
 			
-			RSport = Integer.valueOf(risposta);
+			res = Integer.valueOf(risposta);
 			
 		} catch (IOException e) {
 			System.out.println("Problema lettura risposta: ");
@@ -110,8 +110,8 @@ public class RSClient{
 			System.exit(4);
 		}
 		// ricompilo packet con porta RS
-		if(RSport != -1)
-			packet.setPort(RSport);
+		if(res != -1)
+			packet.setPort(res);
 		
 		else {
 			System.out.println("DiscoveryServer: file non presente");
@@ -124,13 +124,16 @@ public class RSClient{
 		int raw1 = -1; 
 		int raw2 = -1;
 		BufferedReader stdIn = new BufferedReader((new InputStreamReader(System.in)));
+
 		try{ 
 
 			while((input = stdIn.readLine()) != null) {
 
 				try {
 					
-					boStream.reset();	
+					boStream.reset();
+					raw1 = -1;
+					raw2 = -1; 	
 								
 					while((input = stdIn.readLine()) != null || raw1 != -1) {
 						
@@ -172,10 +175,61 @@ public class RSClient{
 
 					continue;
 				}
+
+				// compilo richiesta per RS server 
+				try {
+					boStream.reset();
+					doStream.writeUTF(raw1 + ";" + raw2);
+					data = boStream.toByteArray();
+					packet.setData(data, 0 , data.length);
+					socket.send(packet);
+
+				}catch(IOException e) {
+			
+					System.out.println("Problemi nell'invio della richiesta: ");
+					e.printStackTrace();
+					
+					System.exit(6);
+				}
+
+				try {			
+					packet.setData(buf);
+					socket.receive(packet);
+					// attende al piu 30s poiche timeout settato, dopodiche 
+					// solleva SocketException (compresa nel IOException)
+					
+				} catch(IOException e) {
+					
+					System.out.println("Problemi nella ricezione del datagramma: ");
+					e.printStackTrace();
+					System.exit(7);
+				}
+				
+				try {
+					biStream = new ByteArrayInputStream(packet.getData(), 0 , packet.getLength());
+					diStream = new DataInputStream(biStream);
+					risposta = diStream.readUTF();
+					
+					res = Integer.valueOf(risposta);
+					
+				} catch (IOException e) {
+					System.out.println("Problema lettura risposta: ");
+					e.printStackTrace();
+					System.exit(8);
+				}
+
+				// controllo esito operazione 
+				if(res != -1)
+					System.out.println("Operazione svolta con successo");
+				
+				else {
+					System.out.println("Raw Server: operazione non eseguita correttamente");
+					System.exit(9);
+				}
 			}
 		} catch (Exception e){
 
-			System.out.println("Eccezione non contemplata");
+			System.out.println("Eccezione non prevista: ");
 			e.printStackTrace();
 
 		}

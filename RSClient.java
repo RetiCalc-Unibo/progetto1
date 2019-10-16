@@ -128,7 +128,7 @@ public class RSClient{
 
 			System.out.println("Inserire prima riga da invertire");
 
-			while((insert = stdIn.readLine())) != null || row1 == -1) {
+			while((insert = stdIn.readLine()) != null || row1 == -1) {
 					
 				boStream.reset();
 				row1 = -1;
@@ -148,7 +148,7 @@ public class RSClient{
 				
 				System.out.println("Inserire seconda riga con cui invertire");
 
-				while((insert = stdIn.readLine())) != null || row2 == -1) { 
+				while((insert = stdIn.readLine()) != null || row2 == -1) { 
 					
 					try { 
 						row2 = Integer.parseInt(insert);

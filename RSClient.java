@@ -210,7 +210,6 @@ public class RSClient{
 				if(res != -1){
 					System.out
 						.println("Operazione svolta con successo");
-						ystem.out
 			    	System.out
 			    		.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire prima riga da invertire: ");
 				}

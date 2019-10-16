@@ -89,8 +89,8 @@ public class RowSwapServer extends Thread{
                     BufferedReader br = new BufferedReader(new FileReader(fileName));
                     String line = null;
                     //numLine: tiene conto del numero totale di righe lette
-                    int numLine = 0;
-                    PrintWriter pw = new PrintWriter(fileName);
+                    int numLine = 1;
+                    PrintWriter pw = new PrintWriter(fileName + ".tmp", "UTF-8");
                     //ciclo che mi stampa ogni riga del file
                     //quando si arriva a una delle righe da scambiare
                     //viene stampata la riga che sostituisce quella precedente
@@ -103,16 +103,18 @@ public class RowSwapServer extends Thread{
                     // oppure quando si sono scambiate entrambe le righe (Ciò avviene quando i
                     // l numero di righe lette è maggiore di entrambi gli indici
                     // delle righe che si devono scambiare)
-                    while ((line = br.readLine()) != null && numLine > numLine1 && numLine > numLine2) {
-
+                    while ((line = br.readLine()) != null ) {
                         if (numLine == numLine1) {
-                            pw.print(line2);
+                            pw.println(line2);
                         } else if (numLine == numLine2) {
-                            pw.print(line1);
+                            pw.println(line1);
+                        } else {
+                        	pw.println(line);
                         }
                         numLine++;
-
                     }
+                    br.close();
+                    pw.close();
                 } catch (IOException e) {
 
                     System.err.println("Problemi nello scambio righe: "
@@ -130,7 +132,7 @@ public class RowSwapServer extends Thread{
                     //Riempimento e invio del pacchetto al client:
                     packet.setData(data, 0, data.length);
                     socket.send(packet);
-                    System.out.println("1: Inversione righe avvenuta con successo");
+                    System.out.println("RS Server: Inversione righe avvenuta con successo");
 
                 } catch (IOException e) {
 
@@ -146,7 +148,8 @@ public class RowSwapServer extends Thread{
         // qui catturo le eccezioni non catturate all'interno del while
         // in seguito alle quali il server termina l'esecuzione
         catch (Exception e) {
-            e.printStackTrace();      
+        	System.out.println("Eccezione non contemplata!\n");
+            e.printStackTrace();
         }       
         System.out.println("SwapRow Server: termino...");
         socket.close();

@@ -19,7 +19,12 @@ public class DiscoveryServer {
 
         int[] ports = null;
         String[] files = null;
-        nports = 0;
+
+        int porta = -1;
+        int nArgs = 0;
+        int nServers = 0;
+
+
 
         DatagramSocket socket = null;
         DatagramPacket packet = null;
@@ -44,19 +49,44 @@ public class DiscoveryServer {
             }
 
             //porte per SwapRow servers
-            nports = args.length / 2;
-            ports = new int[nports];
-            files = new String[nports];
+            //nArgs = args.length / 2;
+
+            ports = new int[args.length/2];
+            files = new String[args.length/2];
 
             //ricavo i nomi dei files e i numeri delle porte dagli argomenti
+            //controllo che le porte siano accettabili e i file esistano
             try {
-                for(int i = 1, j = 0; i < nports-1; i+2, j++){
-                    files[j] = args[i];
-                    ports[j] = Integer.parseInt(args[i+1]);
+                int j = 0;
+                File f;
+                boolean doppia = false;
+                int port = -1
+
+                for(int i = 2; i < args.length; i+2){
+                    //files[j] = args[i];
+
+                    f = new File(args[i-1]);
+                    port = Integer.parseInt(args[i]);
+
                     // controllo che la porta sia nel range consentito 1024-65535
-                    if (ports[j] < 1024 || ports[j] > 65535) {
+                    // e che il file esista
+                    if (port < 1024 || port > 65535 || !f.exists()) {
                         System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
                         System.exit(1);
+                    }else{
+                        //controllo non ci siano porte duplicate
+                        for(int z = 0; z < nServers; z++){
+                            if(port == ports[z])
+                                doppia = true;
+                        }
+
+                        //se la porta non è doppia la inserisco nell'array
+                        if(!doppia){
+                            files[j] = args[i];
+                            ports[j] = port;
+                            nServers++;
+                        }
+                        doppia = false;
                     }
                 }
 
@@ -66,13 +96,13 @@ public class DiscoveryServer {
             }
 
             //controllo che non siano state inserite due porte uguali
-            for(int i = 0; i < nports-1; i++){
-                for(int j = i+1; j < nports; j++){
+            /*for(int i = 0; i < nPorts-1; i++){
+                for(int j = i+1; j < nPorts; j++){
                     if(ports[j] == ports[i]){
                         System.out.println("DiscoveryServer: le porte devono essere diverse tra loro");
                     }
                 }
-            }
+            }*/
 
         } else {
             System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
@@ -80,8 +110,8 @@ public class DiscoveryServer {
         }
 
         //creazione e avvio servers SwapRow
-        swapServers = new RowSwapServer[nports];
-        for(int i = 0; i < nports; i++){
+        swapServers = new RowSwapServer[nServers];
+        for(int i = 0; i < nServers; i++){
                 swapServers[i] = new RowSwapServer(files[i], ports[i]);
                 swapServers[i].start();
         }
@@ -98,8 +128,8 @@ public class DiscoveryServer {
         }
 
         try {
-            String fileRichiesto = null;
-            String portaRichiesta = null;
+            //String fileRichiesto = null;
+            //String portaRichiesta = null;
 
             String richiesta = null; //nomefile
             int risposta = -1; //porta
@@ -146,8 +176,8 @@ public class DiscoveryServer {
                 // preparazione della linea e invio della risposta
                 try {
                     //salvataggio porta di risposta
-                    for(int i = 0; i < nports; i++) {
-                        if (files[i].equals(nomeFile))
+                    for(int i = 0; i < nServers; i++) {
+                        if (files[i].equals(richiesta))
                             risposta = ports[i];
                     }
 

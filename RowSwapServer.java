@@ -84,9 +84,10 @@ public class RowSwapServer {
                     linea1 = LineUtility.getLine(nomeFile, numLinea1);
                     linea2 = LineUtility.getLine(nomeFile, numLinea2);
                     BufferedReader br = new BufferedReader(new FileReader(nomeFile));
-
                     String line;
+                    //numLine: tiene conto del numero totale di righe lette
                     int numLine = 0;
+                    PrintWriter pw = new PrintWriter(nomeFile);
                     //ciclo che mi stampa ogni riga del file
                     //quando si arriva a una delle righe da scambiare
                     //viene stampata la riga che sostituisce quella precedente
@@ -94,16 +95,20 @@ public class RowSwapServer {
                     //esempio: ho da scambiare la riga 3 con la 5.
                     //quando arrivo alla riga 3 stampo la 5.
                     //quando arrivo alla riga 5 stampo la 3.
-                    while ((line = br.readLine()) != null) {
+
+                    //il ciclo while finisce o nel momento in cui è finito il file,
+                    // oppure quando si sono scambiate entrambe le righe (Ciò avviene quando i
+                    // l numero di righe lette è maggiore di entrambi gli indici
+                    // delle righe che si devono scambiare)
+                    while ((line = br.readLine()) != null && numLine > numLinea1 && numLine > numLinea2) {
 
                         if (numLine == numLinea1) {
-                            System.out.println(linea2);
+                            pw.print(linea2);
                         } else if (numLine == numLinea2) {
-                            System.out.println(linea1);
-                        } else {
-                            System.out.println(line);
+                            pw.print(linea1);
                         }
                         numLine++;
+
                     }
                 } catch (IOException e) {
                     System.err.println("Problemi nell'invio della risposta: "
@@ -113,12 +118,8 @@ public class RowSwapServer {
                     // il server continua a fornire il servizio ricominciando dall'inizio
                     // del ciclo
                 }
-
-
-                //NB il prof aveva precisato che occorresse restituire un intero, che indicava il successo
-                //dell'operazione, solo che non siamo in C, ma in java, quindi decidete se cambiare o meno
-                //la println in seguito
-                System.out.println("Inversione righe avvenuta con successo");
+  
+                System.out.println("1: Inversione righe avvenuta con successo");
             } // while
 
         }

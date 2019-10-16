@@ -148,7 +148,7 @@ public class RSClient{
 				
 				System.out.println("Inserire seconda riga con cui invertire");
 
-				while((insert = stdIn.readLine()) != null || row2 == -1) { 
+				while(row2 == -1 && (insert = stdIn.readLine()) != null) { 
 					
 					try { 
 						row2 = Integer.parseInt(insert);

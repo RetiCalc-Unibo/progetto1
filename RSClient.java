@@ -118,24 +118,24 @@ public class RSClient{
 			System.exit(5);
 		}
 		
-		// inizio ciclo richieste a Raw Swap
+		// inizio ciclo richieste a Row Swap
 		String insert = null;
-		int raw1 = -1; 
-		int raw2 = -1;
+		int row1 = -1; 
+		int row2 = -1;
 		BufferedReader stdIn = new BufferedReader((new InputStreamReader(System.in)));
 
 		try{ 
 
 			System.out.println("Inserire prima riga da invertire");
 
-			while((insert = stdIn.readLine())) != null || raw1 == -1) {
+			while((insert = stdIn.readLine())) != null || row1 == -1) {
 					
 				boStream.reset();
-				raw1 = -1;
-				raw2 = -1; 	
+				row1 = -1;
+				row2 = -1; 	
 													
 				try { 
-					raw1 = Integer.parseInt(insert);
+					row1 = Integer.parseInt(insert);
 					
 				}catch(NumberFormatException e) {
 					
@@ -148,10 +148,10 @@ public class RSClient{
 				
 				System.out.println("Inserire seconda riga con cui invertire");
 
-				while((insert = stdIn.readLine())) != null || raw2 == -1) { 
+				while((insert = stdIn.readLine())) != null || row2 == -1) { 
 					
 					try { 
-						raw2 = Integer.parseInt(insert);
+						row2 = Integer.parseInt(insert);
 						
 					} catch(NumberFormatException e) {
 						
@@ -166,15 +166,15 @@ public class RSClient{
 				// compilo richiesta per RS server 
 				try {
 					boStream.reset();
-					doStream.writeUTF(raw1 + " " + raw2);
+					doStream.writeUTF(row1 + " " + row2);
 					data = boStream.toByteArray();
 					packet.setData(data, 0 , data.length);
 					socket.send(packet);
-					System.out.println("Richiesta inviata correttamente al RawSwap");
+					System.out.println("Richiesta inviata correttamente al RowSwap");
 
 				}catch(IOException e) {
 			
-					System.out.println("Problemi nell'invio della richiesta a RawSwap: ");
+					System.out.println("Problemi nell'invio della richiesta a RowSwap: ");
 					e.printStackTrace();
 					
 					System.exit(6);
@@ -216,7 +216,7 @@ public class RSClient{
 				}
 				
 				else {
-					System.out.println("Raw Server: operazione non eseguita correttamente");
+					System.out.println("Row Server: operazione non eseguita correttamente");
 					System.exit(9);
 				}
 			}

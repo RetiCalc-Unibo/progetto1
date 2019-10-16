@@ -8,6 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.StringTokenizer;
+import java.io.File;
 
 public class DiscoveryServer {
 
@@ -57,12 +58,40 @@ public class DiscoveryServer {
             //ricavo i nomi dei files e i numeri delle porte dagli argomenti
             //controllo che le porte siano accettabili e i file esistano
             try {
-                int j = 0;
+                int j = 0, i = 2;
                 File f;
                 boolean doppia = false;
-                int port = -1
+                int port = -1;
 
-                for(int i = 2; i < args.length; i+2){
+                while(i < args.length){
+                    f = new File(args[i-1]);
+                    port = Integer.parseInt(args[i]);
+
+                    // controllo che la porta sia nel range consentito 1024-65535
+                    // e che il file esista
+                    if (port < 1024 || port > 65535 || !f.exists()) {
+                        System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
+                        System.exit(1);
+                    }else{
+                        //controllo non ci siano porte duplicate
+                        for(int z = 0; z < nServers; z++){
+                            if(port == ports[z])
+                                doppia = true;
+                        }
+
+                        //se la porta non è doppia la inserisco nell'array
+                        if(!doppia){
+                            files[j] = args[i];
+                            ports[j] = port;
+                            nServers++;
+                        }
+                        doppia = false;
+                    }
+
+                    i = i+2;
+                }
+
+                /*for(int i = 2; i < args.length; i+2){
                     //files[j] = args[i];
 
                     f = new File(args[i-1]);
@@ -88,7 +117,7 @@ public class DiscoveryServer {
                         }
                         doppia = false;
                     }
-                }
+                }*/
 
             } catch (NumberFormatException e) {
                 System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
@@ -112,13 +141,13 @@ public class DiscoveryServer {
         //creazione e avvio servers SwapRow
         swapServers = new RowSwapServer[nServers];
         for(int i = 0; i < nServers; i++){
-                swapServers[i] = new RowSwapServer(files[i], ports[i]);
+                swapServers[i] = new RowSwapServer(ports[i], files[i]);
                 swapServers[i].start();
         }
 
         //creazione socket server
         try {
-            socket = new DatagramSocket(port);
+            socket = new DatagramSocket(porta);
             packet = new DatagramPacket(buf, buf.length);
             System.out.println("Creata la socket: " + socket);
         } catch (SocketException e) {
@@ -184,7 +213,7 @@ public class DiscoveryServer {
                     //rispondo al client
                     boStream = new ByteArrayOutputStream();
                     doStream = new DataOutputStream(boStream);
-                    doStream.writeUTF(risposta);
+                    doStream.writeUTF(String.valueOf(risposta));
                     data = boStream.toByteArray();
                     packet.setData(data, 0, data.length);
                     socket.send(packet);
@@ -205,7 +234,7 @@ public class DiscoveryServer {
         catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("LineServer: termino...");
+        System.out.println("DiscoveryServer: termino...");
         socket.close();
     }
 

@@ -146,9 +146,9 @@ public class RowSwapServer {
         // qui catturo le eccezioni non catturate all'interno del while
         // in seguito alle quali il server termina l'esecuzione
         catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("SwapRow Server: termino...");
-            socket.close();
+            e.printStackTrace();      
         }       
+        System.out.println("SwapRow Server: termino...");
+        socket.close();
     }
 }

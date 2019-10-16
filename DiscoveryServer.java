@@ -205,11 +205,15 @@ public class DiscoveryServer {
 
                 // preparazione della linea e invio della risposta
                 try {
+                    boolean trovato = false;
                     //salvataggio porta di risposta
-                    for(int i = 0; i < nServers; i++) {
-                        System.out.println("cerco file: " +files[i]);
+
+                    for(int i = 0; !trovato && i < nServers; i++) {
+                        //System.out.println("cerco file: " +files[i]);
+
                         if (files[i].equals(richiesta)) {
-                            System.out.println("trovato file: " +files[i]);
+                            trovato = true;
+                            //System.out.println("trovato file: " +files[i]);
                             risposta = ports[i];
                         }
                     }

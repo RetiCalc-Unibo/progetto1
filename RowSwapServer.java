@@ -87,7 +87,7 @@ public class RowSwapServer {
                     line1 = LineUtility.getLine(fileName, numLine1);
                     line2 = LineUtility.getLine(fileName, numLine2);
                     BufferedReader br = new BufferedReader(new FileReader(fileName));
-                    String line;
+                    String line = null;
                     //numLine: tiene conto del numero totale di righe lette
                     int numLine = 0;
                     PrintWriter pw = new PrintWriter(fileName);

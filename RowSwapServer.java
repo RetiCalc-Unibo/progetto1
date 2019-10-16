@@ -15,7 +15,7 @@ public class RowSwapServer {
     //success indica l'esito dell'inversione delle righe
     int success = 1;
 
-    String fileName;
+    String fileName = null;
 
     public RowSwapServer(int port, String file) throws IOException {
         //NB il controllo del numero della porta viene fatto nel Discovery Server
@@ -46,9 +46,11 @@ public class RowSwapServer {
 
             while (true) {
                 System.out.println("\nIn attesa di richieste...");
+                success = 1;
 
                 // ricezione del datagramma
                 try {
+
                     packet.setData(buf);
                     socket.receive(packet);
                 } catch (IOException e) {
@@ -113,32 +115,40 @@ public class RowSwapServer {
                     }
                 } catch (IOException e) {
 
-                    System.err.println("Problemi nell'invio della risposta: "
+                    System.err.println("Problemi nello scambio righe: "
                             + e.getMessage());
                     e.printStackTrace();
                     success = -1;
+                    continue;
                 }
+                try{ 
+                    boStream = new ByteArrayOutputStream();
+                    doStream = new DataOutputStream(boStream);
+                    doStream.writeUTF(String.valueOf(success));
+                    data = boStream.toByteArray();
 
-                boStream = new ByteArrayOutputStream();
-                doStream = new DataOutputStream(boStream);
-                doStream.writeUTF(String.valueOf(success));
-                data = boStream.toByteArray();
+                    //Riempimento e invio del pacchetto al client:
+                    packet.setData(data, 0, data.length);
+                    socket.send(packet);
+                    System.out.println("1: Inversione righe avvenuta con successo");
 
-                //Riempimento e invio del pacchetto al client:
-                packet.setData(data, 0, data.length);
-                socket.send(packet);
-                System.out.println("1: Inversione righe avvenuta con successo");
+                } catch (IOException e) {
+
+                    System.err.println("Problemi nell'invio della risposta: "
+                            + e.getMessage());
+                    e.printStackTrace();
+                    continue;
+                }
 
             }
 
         }
         // qui catturo le eccezioni non catturate all'interno del while
         // in seguito alle quali il server termina l'esecuzione
-        catch (
-                Exception e) {
+        catch (Exception e) {
             e.printStackTrace();
-        }
-        System.out.println("SwapRow Server: termino...");
-        socket.close();
+            System.out.println("SwapRow Server: termino...");
+            socket.close();
+        }       
     }
 }

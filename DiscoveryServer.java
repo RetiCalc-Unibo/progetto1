@@ -210,7 +210,7 @@ public class DiscoveryServer {
 
                     for(int i = 0; !trovato && i < nServers; i++) {
                         //System.out.println("cerco file: " +files[i]);
-                        
+
                         if (files[i].equals(richiesta)) {
                             trovato = true;
                             //System.out.println("trovato file: " +files[i]);

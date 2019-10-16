@@ -4,17 +4,14 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.StringTokenizer;
 
-public class RowSwapServer extends Thread{
-
+public class RowSwapServer extends Thread {
     //System.out.println("RowSwap server: avviato");
 
     DatagramSocket socket = null;
     DatagramPacket packet = null;
     byte[] buf = new byte[256];
     int port = -1;
-    //success indica l'esito dell'inversione delle righe
-    int success = 1;
-
+    int success = 1; /* indica l'esito dell'inversione delle righe */
     String fileName = null;
 
     public RowSwapServer(int port, String file) {
@@ -50,16 +47,13 @@ public class RowSwapServer extends Thread{
 
                 // ricezione del datagramma
                 try {
-
                     packet.setData(buf);
                     socket.receive(packet);
                 } catch (IOException e) {
-                    System.err.println("Problemi nella ricezione del datagramma: "
-                            + e.getMessage());
+                    System.err.println("Problemi nella ricezione del datagramma: " + e.getMessage());
                     e.printStackTrace();
                     continue;
-                    // il server continua a fornire il servizio ricominciando dall'inizio
-                    // del ciclo
+                    // il server continua a fornire il servizio ricominciando dall'inizio del ciclo
                 }
 
                 try {
@@ -72,14 +66,11 @@ public class RowSwapServer extends Thread{
                     System.out.println("Richiesta linea " + numLine1 + " del file " + fileName);
                     numLine2 = Integer.parseInt(st.nextToken());
                     System.out.println("Richiesta linea " + numLine2 + " del file " + fileName);
-
                 } catch (Exception e) {
-                    System.err.println("Problemi nella lettura della richiesta: "
-                            + fileName);
+                    System.err.println("Problemi nella lettura della richiesta: " + fileName);
                     e.printStackTrace();
                     continue;
-                    // il server continua a fornire il servizio ricominciando dall'inizio
-                    // del ciclo
+                    // il server continua a fornire il servizio ricominciando dall'inizio del ciclo
                 }
 
                 // preparazione della linea e invio della risposta
@@ -88,21 +79,18 @@ public class RowSwapServer extends Thread{
                     line2 = LineUtility.getLine(fileName, numLine2);
                     BufferedReader br = new BufferedReader(new FileReader(fileName));
                     String line = null;
-                    //numLine: tiene conto del numero totale di righe lette
-                    int numLine = 1;
+                    int numLine = 1; /* numLine tiene conto del numero totale di righe lette */
                     PrintWriter pw = new PrintWriter(fileName + ".tmp", "UTF-8");
-                    //ciclo che mi stampa ogni riga del file
-                    //quando si arriva a una delle righe da scambiare
-                    //viene stampata la riga che sostituisce quella precedente
 
-                    //esempio: ho da scambiare la riga 3 con la 5.
-                    //quando arrivo alla riga 3 stampo la 5.
-                    //quando arrivo alla riga 5 stampo la 3.
+                    // ciclo che stampa ogni riga del file
+                    // quando si arriva a una delle righe da scambiare, viene stampata la riga che sostituisce quella precedente
 
-                    //il ciclo while finisce o nel momento in cui è finito il file,
-                    // oppure quando si sono scambiate entrambe le righe (Ciò avviene quando i
-                    // l numero di righe lette è maggiore di entrambi gli indici
-                    // delle righe che si devono scambiare)
+                    // esempio: si vuole scambiare la riga 3 con la 5.
+                    // quando arrivo alla riga 3 stampo la 5, quando arrivo alla 5 stampo la 3.
+
+                    // il ciclo while finisce nel momento in cui è finito il file o quando si sono scambiate entrambe le righe
+                    // (ciò avviene quando il numero di righe lette è maggiore di entrambi gli indici delle righe che si devono scambiare)
+
                     while ((line = br.readLine()) != null ) {
                         if (numLine == numLine1) {
                             pw.println(line2);
@@ -116,13 +104,12 @@ public class RowSwapServer extends Thread{
                     br.close();
                     pw.close();
                 } catch (IOException e) {
-
-                    System.err.println("Problemi nello scambio righe: "
-                            + e.getMessage());
+                    System.err.println("Problemi nello scambio righe: " + e.getMessage());
                     e.printStackTrace();
                     success = -1;
                 }
-                try{ 
+
+                try {
                     boStream = new ByteArrayOutputStream();
                     doStream = new DataOutputStream(boStream);
                     doStream.writeUTF(String.valueOf(success));
@@ -132,24 +119,21 @@ public class RowSwapServer extends Thread{
                     packet.setData(data, 0, data.length);
                     socket.send(packet);
                     System.out.println("RS Server: Inversione righe avvenuta con successo");
-
                 } catch (IOException e) {
-
-                    System.err.println("Problemi nell'invio della risposta: "
-                            + e.getMessage());
+                    System.err.println("Problemi nell'invio della risposta: " + e.getMessage());
                     e.printStackTrace();
                     continue;
                 }
-
             }
-
         }
+
         // qui catturo le eccezioni non catturate all'interno del while
         // in seguito alle quali il server termina l'esecuzione
         catch (Exception e) {
         	System.out.println("Eccezione non contemplata!\n");
             e.printStackTrace();
-        }       
+        }      
+
         System.out.println("SwapRow Server: termino...");
         socket.close();
     }

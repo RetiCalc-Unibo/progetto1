@@ -3,21 +3,20 @@ import java.net.*;
 
 public class RSClient{
 
-	public static void main(String[] args){
-
+	public static void main(String[] args) {
 		InetAddress addr = null;
 		int port = -1;
 
 		// settaggio argomenti 
-		try{
-			if(args.length == 3){
+		try {
+			if(args.length == 3) {
 				addr = InetAddress.getByName(args[0]);
 				port = Integer.parseInt(args[1]);
 			} else {
 				System.out.println("Usage: java RSClient IPDiscoveryServer portDS fileName");
 				System.exit(1);
 			}
-		} catch (UnknownHostException e){
+		} catch (UnknownHostException e) {
 			System.out.println("Problemi nella determinazione dell'endpoint del server : ");
 			e.printStackTrace();
 			System.out.println("RSClient: interrompo...");
@@ -26,29 +25,26 @@ public class RSClient{
 
 		// realizzazione socket e settaggio timeout 30s
 		// creazione datagram packet
-
 		DatagramSocket socket = null;
 		DatagramPacket packet = null;
 		byte[] buf = new byte[256];
 
-		try{
+		try {
 			socket = new DatagramSocket();
 			socket.setSoTimeout(30000);
 			packet = new DatagramPacket(buf, buf.length, addr, port);
 			System.out.println("\nRSClient: avviato");
 			System.out.println("Creata la socket: " + socket);
-
-		} catch (SocketException e){
+		} catch (SocketException e) {
 			System.out.println("Problemi nella creazione della socket: ");
 			e.printStackTrace();
 			System.out.println("RSClient: interrompo...");
-			System.exit(1);
+			System.exit(3);
 		}
 
 		// compilazione richiesta al server per porta RS
-		
 		// output var
-		byte [] data = null;
+		byte[] data = null;
 		ByteArrayOutputStream boStream = null;
 		DataOutputStream doStream = null;
 		
@@ -58,9 +54,7 @@ public class RSClient{
 		String risposta = null;
 		int res = -1;
 		
-		
 		try {
-			
 			boStream = new ByteArrayOutputStream();
 			doStream = new DataOutputStream(boStream);
 			
@@ -69,51 +63,41 @@ public class RSClient{
 			
 			packet.setData(data);
 			socket.send(packet);
-			
 			System.out.println("Richiesta inviata a Discovery Server: " + addr + ", "+ port);
-			
-		}	catch(IOException e) {
-			
+		} catch (IOException e) {
 			System.out.println("Problemi nell'invio della richiesta: ");
 			e.printStackTrace();
-			
-			System.exit(2);
+			System.exit(4);
 		}
 		
 		// settaggio ricezione 
-		
 		try {			
 			packet.setData(buf);
 			socket.receive(packet);
 			// attende al piu 30s poiche timeout settato, dopodiche 
 			// solleva SocketException (compresa nel IOException)
-			
-		} catch(IOException e) {
-			
+		} catch (IOException e) {
 			System.out.println("Problemi nella ricezione del datagramma: ");
 			e.printStackTrace();
-			System.exit(3);
+			System.exit(5);
 		}
 		
 		try {
 			biStream = new ByteArrayInputStream(packet.getData(), 0 , packet.getLength());
 			diStream = new DataInputStream(biStream);
 			risposta = diStream.readUTF();
-			
 			res = Integer.valueOf(risposta);
-			
 		} catch (IOException e) {
 			System.out.println("Problema lettura risposta: ");
 			e.printStackTrace();
-			System.exit(4);
+			System.exit(6);
 		}
 		// ricompilo packet con porta RS
-		if(res != -1)
+		if (res != -1) {
 			packet.setPort(res);
-		
-		else {
+		} else {
 			System.out.println("DiscoveryServer: file non presente");
-			System.exit(5);
+			System.exit(7);
 		}
 		
 		// inizio ciclo richieste a Row Swap
@@ -122,41 +106,32 @@ public class RSClient{
 		int row2 = -1;
 		BufferedReader stdIn = new BufferedReader((new InputStreamReader(System.in)));
 
-		try{ 
-
+		try {
 			System.out.println("Inserire prima riga da invertire");
 
-			while((insert = stdIn.readLine()) != null || row1 == -1) {
-					
+			while ((insert = stdIn.readLine()) != null || row1 == -1) {
 				boStream.reset();
 				row1 = -1;
 				row2 = -1; 	
 													
 				try { 
 					row1 = Integer.parseInt(insert);
-					
-				}catch(NumberFormatException e) {
-					
+				} catch (NumberFormatException e) {
 					System.out.println("Problema interazione da console: ");
 					e.printStackTrace();
-					System.out
-					.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire numero riga 1: ");
+					System.out.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire numero riga 1: ");
 					continue;
 				}
 				
 				System.out.println("Inserire seconda riga con cui invertire");
 
-				while(row2 == -1 && (insert = stdIn.readLine()) != null) { 
-					
+				while(row2 == -1 && (insert = stdIn.readLine()) != null) {
 					try { 
 						row2 = Integer.parseInt(insert);
-						
-					} catch(NumberFormatException e) {
-						
+					} catch (NumberFormatException e) {
 						System.out.println("Problema interazione da console: ");
 						e.printStackTrace();
-						System.out
-						.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire numero riga 2: ");
+						System.out.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire numero riga 2: ");
 						continue;
 					}
 				}
@@ -169,13 +144,10 @@ public class RSClient{
 					packet.setData(data, 0 , data.length);
 					socket.send(packet);
 					System.out.println("Richiesta inviata correttamente al RowSwap");
-
-				}catch(IOException e) {
-			
+				} catch (IOException e) {
 					System.out.println("Problemi nell'invio della richiesta a RowSwap: ");
 					e.printStackTrace();
-					
-					System.exit(6);
+					System.exit(8);
 				}
 
 				try {			
@@ -183,51 +155,41 @@ public class RSClient{
 					socket.receive(packet);
 					// attende al piu 30s poiche timeout settato, dopodiche 
 					// solleva SocketException (compresa nel IOException)
-					
-				} catch(IOException e) {
-					
+				} catch (IOException e) {
 					System.out.println("Problemi nella ricezione del datagramma: ");
 					e.printStackTrace();
-					System.exit(7);
+					System.exit(9);
 				}
 				
 				try {
 					biStream = new ByteArrayInputStream(packet.getData(), 0 , packet.getLength());
 					diStream = new DataInputStream(biStream);
 					risposta = diStream.readUTF();
-					
 					res = Integer.valueOf(risposta);
-					
 				} catch (IOException e) {
 					System.out.println("Problema lettura risposta: ");
 					e.printStackTrace();
-					System.exit(8);
+					System.exit(10);
 				}
 
 				// controllo esito operazione 
-				if(res != -1){
-					System.out
-						.println("Operazione svolta con successo");
-			    	System.out
-			    		.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire prima riga da invertire: ");
+				if (res != -1) {
+					System.out.println("Operazione svolta con successo");
+			    	System.out.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire prima riga da invertire: ");
 				}
 				
 				else {
 					System.out.println("RowSwap: operazione non contemplata");
-					System.exit(9);
+					System.exit(11);
 				}
 			}
 
-		} catch (Exception e){
-
+		} catch (Exception e) {
 			System.out.println("Eccezione non prevista: ");
 			e.printStackTrace();
-
 		}
 
 		System.out.println("RSClient: terminazione..");
-
 		socket.close();
-
 	}
 }

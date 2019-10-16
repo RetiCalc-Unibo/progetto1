@@ -118,75 +118,63 @@ public class RSClient{
 			System.exit(5);
 		}
 		
-		// inizio ciclo richieste a SawSwap
-		
-		String input = null;
+		// inizio ciclo richieste a Raw Swap
+		String insert = null;
 		int raw1 = -1; 
 		int raw2 = -1;
 		BufferedReader stdIn = new BufferedReader((new InputStreamReader(System.in)));
 
 		try{ 
 
-			while((input = stdIn.readLine()) != null) {
+			System.out.println("Inserire prima riga da invertire");
 
-				try {
+			while((insert = stdIn.readLine())) != null || raw1 == -1) {
 					
-					boStream.reset();
-					raw1 = -1;
-					raw2 = -1; 	
-								
-					while((input = stdIn.readLine()) != null || raw1 != -1) {
-						
-						System.out.println("Inserire prima riga da invertire");
-						
-						try { 
-							raw1 = Integer.valueOf(input);
-							
-						}catch(NumberFormatException e) {
-							
-							System.out.println("Problema interazione da console: ");
-							e.printStackTrace();
-							System.out
-							.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti numero riga 1: ");
-							continue;
-						}
-					}
+				boStream.reset();
+				raw1 = -1;
+				raw2 = -1; 	
+													
+				try { 
+					raw1 = Integer.parseInt(insert);
 					
-					while((input = stdIn.readLine()) != null || raw2 != -1) { 
-						
-						System.out.println("Inserire seconda riga con cui invertire");
-
-						try { 
-							raw2 = Integer.valueOf(input);
-							
-						} catch(NumberFormatException e) {
-							
-							System.out.println("Problema interazione da console: ");
-							e.printStackTrace();
-							System.out
-							.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti numero riga 2: ");
-							continue;
-						}
-					}
-				} catch (IOException e) {
-
-					System.out.println("Problemi invio richiesta a RawSwap: ");
+				}catch(NumberFormatException e) {
+					
+					System.out.println("Problema interazione da console: ");
 					e.printStackTrace();
-
+					System.out
+					.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire numero riga 1: ");
 					continue;
+				}
+				
+				System.out.println("Inserire seconda riga con cui invertire");
+
+				while((insert = stdIn.readLine())) != null || raw2 == -1) { 
+					
+					try { 
+						raw2 = Integer.parseInt(insert);
+						
+					} catch(NumberFormatException e) {
+						
+						System.out.println("Problema interazione da console: ");
+						e.printStackTrace();
+						System.out
+						.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire numero riga 2: ");
+						continue;
+					}
 				}
 
 				// compilo richiesta per RS server 
 				try {
 					boStream.reset();
-					doStream.writeUTF(raw1 + ";" + raw2);
+					doStream.writeUTF(raw1 + " " + raw2);
 					data = boStream.toByteArray();
 					packet.setData(data, 0 , data.length);
 					socket.send(packet);
+					System.out.println("Richiesta inviata correttamente al RawSwap");
 
 				}catch(IOException e) {
 			
-					System.out.println("Problemi nell'invio della richiesta: ");
+					System.out.println("Problemi nell'invio della richiesta a RawSwap: ");
 					e.printStackTrace();
 					
 					System.exit(6);
@@ -219,14 +207,20 @@ public class RSClient{
 				}
 
 				// controllo esito operazione 
-				if(res != -1)
-					System.out.println("Operazione svolta con successo");
+				if(res != -1){
+					System.out
+						.println("Operazione svolta con successo");
+						ystem.out
+			    	System.out
+			    		.print("\n^D(Unix)/^Z(Win)+invio per uscire, altrimenti inserire prima riga da invertire: ");
+				}
 				
 				else {
 					System.out.println("Raw Server: operazione non eseguita correttamente");
 					System.exit(9);
 				}
-		}	
+			}
+
 		} catch (Exception e){
 
 			System.out.println("Eccezione non prevista: ");

@@ -4,7 +4,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.StringTokenizer;
 
-public class RowSwapServer {
+public class RowSwapServer extends Thread{
 
     //System.out.println("RowSwap server: avviato");
 

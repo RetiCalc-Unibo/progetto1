@@ -17,7 +17,7 @@ public class RowSwapServer extends Thread{
 
     String fileName = null;
 
-    public RowSwapServer(int port, String file) throws IOException {
+    public RowSwapServer(int port, String file) {
         //NB il controllo del numero della porta viene fatto nel Discovery Server
         this.port = port;
         this.fileName = file;

@@ -71,12 +71,14 @@ public class DiscoveryServer {
                     // e che il file esista
                     if (port < 1024 || port > 65535 || !f.exists()) {
                         System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
-                        System.exit(1);
+                        //System.exit(1);
                     }else{
                         //controllo non ci siano porte duplicate
                         for(int z = 0; z < nServers; z++){
-                            if(port == ports[z])
+                            if(port == ports[z]) {
                                 doppia = true;
+                                System.out.println("porta doppia: " +port);
+                            }
                         }
 
                         //se la porta non è doppia la inserisco nell'array
@@ -92,47 +94,11 @@ public class DiscoveryServer {
                     i = i+2;
                 }
 
-                /*for(int i = 2; i < args.length; i+2){
-                    //files[j] = args[i];
-
-                    f = new File(args[i-1]);
-                    port = Integer.parseInt(args[i]);
-
-                    // controllo che la porta sia nel range consentito 1024-65535
-                    // e che il file esista
-                    if (port < 1024 || port > 65535 || !f.exists()) {
-                        System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
-                        System.exit(1);
-                    }else{
-                        //controllo non ci siano porte duplicate
-                        for(int z = 0; z < nServers; z++){
-                            if(port == ports[z])
-                                doppia = true;
-                        }
-
-                        //se la porta non è doppia la inserisco nell'array
-                        if(!doppia){
-                            files[j] = args[i];
-                            ports[j] = port;
-                            nServers++;
-                        }
-                        doppia = false;
-                    }
-                }*/
-
             } catch (NumberFormatException e) {
                 System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
                 System.exit(1);
             }
 
-            //controllo che non siano state inserite due porte uguali
-            /*for(int i = 0; i < nPorts-1; i++){
-                for(int j = i+1; j < nPorts; j++){
-                    if(ports[j] == ports[i]){
-                        System.out.println("DiscoveryServer: le porte devono essere diverse tra loro");
-                    }
-                }
-            }*/
 
         } else {
             System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
@@ -150,7 +116,7 @@ public class DiscoveryServer {
         try {
             socket = new DatagramSocket(porta);
             packet = new DatagramPacket(buf, buf.length);
-            System.out.println("Creata la socket: " + socket);
+            System.out.println("Creata la socket del DS: " + socket);
         } catch (SocketException e) {
             System.out.println("Problemi nella creazione della socket: ");
             e.printStackTrace();
@@ -172,7 +138,7 @@ public class DiscoveryServer {
             byte[] data = null;
 
             while (true) {
-                System.out.println("\nIn attesa di richieste...");
+                System.out.println("\nDS: In attesa di richieste...");
 
                 // ricezione del datagramma
                 try {

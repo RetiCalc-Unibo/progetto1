@@ -81,9 +81,10 @@ public class DiscoveryServer {
 
                         //se la porta non è doppia la inserisco nell'array
                         if(!doppia){
-                            files[j] = args[i];
+                            files[j] = args[i-1];
                             ports[j] = port;
                             nServers++;
+                            j++;
                         }
                         doppia = false;
                     }
@@ -192,7 +193,7 @@ public class DiscoveryServer {
                     richiesta = diStream.readUTF();
 
                     //st = new StringTokenizer(richiesta);
-                    System.out.println("Richiesto file" +richiesta);
+                    System.out.println("Richiesto file: " +richiesta);
                 } catch (Exception e) {
                     System.err.println("Problemi nella lettura della richiesta: "
                             + richiesta);
@@ -206,8 +207,11 @@ public class DiscoveryServer {
                 try {
                     //salvataggio porta di risposta
                     for(int i = 0; i < nServers; i++) {
-                        if (files[i].equals(richiesta))
+                        System.out.println("cerco file: " +files[i]);
+                        if (files[i].equals(richiesta)) {
+                            System.out.println("trovato file: " +files[i]);
                             risposta = ports[i];
+                        }
                     }
 
                     //rispondo al client

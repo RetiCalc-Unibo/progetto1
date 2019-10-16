@@ -34,7 +34,6 @@ public class LineUtility {
 	for (int i = 1; i <= numLinea; i++) {
 		linea = in.readLine();
 		if (linea == null) {
-			linea = "Linea non trovata";
 			in.close();
 			throw new IOException("Linea non trovata");
 		}

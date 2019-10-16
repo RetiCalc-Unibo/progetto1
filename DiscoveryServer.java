@@ -25,8 +25,6 @@ public class DiscoveryServer {
         int nArgs = 0;
         int nServers = 0;
 
-
-
         DatagramSocket socket = null;
         DatagramPacket packet = null;
         byte[] buf = new byte[256];
@@ -69,10 +67,10 @@ public class DiscoveryServer {
 
                     // controllo che la porta sia nel range consentito 1024-65535
                     // e che il file esista
-                    if (port < 1024 || port > 65535 || !f.exists()) {
+                    if (port < 1024 || port > 65535 || !f.isFile()) {
                         System.out.println("Usage: java DiscoveryServer [serverPort>1024] file1 [port1>1024] file2 [port2>1024]...");
                         //System.exit(1);
-                    }else{
+                    } else {
                         //controllo non ci siano porte duplicate
                         for(int z = 0; z < nServers; z++){
                             if(port == ports[z]) {

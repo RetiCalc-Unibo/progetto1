@@ -121,7 +121,6 @@ public class RowSwapServer extends Thread{
                             + e.getMessage());
                     e.printStackTrace();
                     success = -1;
-                    continue;
                 }
                 try{ 
                     boStream = new ByteArrayOutputStream();

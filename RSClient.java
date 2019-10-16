@@ -5,8 +5,6 @@ public class RSClient{
 
 	public static void main(String[] args){
 
-
-
 		InetAddress addr = null;
 		int port = -1;
 
@@ -215,7 +213,7 @@ public class RSClient{
 				}
 				
 				else {
-					System.out.println("Row Server: operazione non eseguita correttamente");
+					System.out.println("RowSwap: operazione non contemplata");
 					System.exit(9);
 				}
 			}

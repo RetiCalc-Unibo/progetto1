@@ -16,7 +16,7 @@ public class LineUtility {
 	 * @param numLinea
 	 * @return linea letta o "Linea non trovata..."
 	 */
-	static String getLine(String nomeFile, int numLinea) {
+	static String getLine(String nomeFile, int numLinea) throws IOException{
 		String linea = null;
 		BufferedReader in = null;
 
@@ -31,20 +31,15 @@ public class LineUtility {
 		e.printStackTrace();
 		return linea = "File non trovato";
 	}
-	try {
-		for (int i = 1; i <= numLinea; i++) {
-			linea = in.readLine();
-			if (linea == null) {
-				linea = "Linea non trovata";
-				in.close();
-				return linea;
-			}
+	for (int i = 1; i <= numLinea; i++) {
+		linea = in.readLine();
+		if (linea == null) {
+			linea = "Linea non trovata";
+			in.close();
+			throw new IOException("Linea non trovata");
 		}
-	} catch (IOException e) {
-		System.out.println("Linea non trovata: ");
-		e.printStackTrace();
-		return linea = "Linea non trovata";
 	}
+	
 	System.out.println("Linea selezionata: " + linea);
 	
 	try {
@@ -56,28 +51,4 @@ public class LineUtility {
 	}
     return linea;
   } // getLine
-
-	/**
-	 * metodo per recuperare la linea successiva di un file aperto in precedenza
-	 * @param in
-	 * @return linea
-	 */
-	static String getNextLine(BufferedReader in) {
-		String linea = null;
-		try {
-			if ((linea = in.readLine()) == null) {
-				in.close();
-				linea = "Nessuna linea disponibile";
-			}
-		} catch (FileNotFoundException e) {
-			System.out.println("File non trovato: ");
-			e.printStackTrace();
-			return linea = "File non trovato";
-		} catch (IOException e) {
-			System.out.println("Problemi nell'estrazione della linea: ");
-			e.printStackTrace();
-			linea = "Nessuna linea disponibile";
-		}
-		return linea;
-	} //getNextLine
 }

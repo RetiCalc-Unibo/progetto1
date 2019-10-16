@@ -226,7 +226,7 @@ public class RSClient{
 					System.out.println("Raw Server: operazione non eseguita correttamente");
 					System.exit(9);
 				}
-			}
+		}	
 		} catch (Exception e){
 
 			System.out.println("Eccezione non prevista: ");
@@ -234,7 +234,7 @@ public class RSClient{
 
 		}
 
-		System.out.println("RSClient: terminazione....... è stato bll");
+		System.out.println("RSClient: terminazione..");
 
 		socket.close();
 

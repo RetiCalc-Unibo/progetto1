@@ -30,6 +30,7 @@ public class RowSwapServer extends Thread {
             e.printStackTrace();
             System.exit(1);
         }
+
         try {
             int numLine1, numLine2 = -1;
             String request = null;
@@ -80,7 +81,10 @@ public class RowSwapServer extends Thread {
                     BufferedReader br = new BufferedReader(new FileReader(fileName));
                     String line = null;
                     int numLine = 1; /* numLine tiene conto del numero totale di righe lette */
-                    PrintWriter pw = new PrintWriter(fileName + ".tmp", "UTF-8");
+                    
+
+                    File ftemp = new File(fileName +".tmp");
+                    PrintWriter pw = new PrintWriter(ftemp, "UTF-8");
 
                     // ciclo che stampa ogni riga del file
                     // quando si arriva a una delle righe da scambiare, viene stampata la riga che sostituisce quella precedente
@@ -101,8 +105,10 @@ public class RowSwapServer extends Thread {
                         }
                         numLine++;
                     }
+                    
                     br.close();
                     pw.close();
+                    ftemp.renameTo(new File(fileName));
                 } catch (IOException e) {
                     System.err.println("Problemi nello scambio righe: " + e.getMessage());
                     e.printStackTrace();
